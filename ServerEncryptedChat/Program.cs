@@ -36,20 +36,23 @@ namespace ServerEncryptedChat
 
                 Socket s = myList.AcceptSocket();
                 Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
-
-                byte[] b = new byte[s.ReceiveBufferSize];
-                int k = s.Receive(b);
-                string msg = "";
-                Console.WriteLine("Recieved...");
-                for (int i = 0; i < k; i++)
+                bool cntrl = true;
+                while (cntrl)
                 {
-                    msg += Convert.ToChar(b[i]);
-                }
-                Console.WriteLine(TxtDecrypt(msg, EncryptionKey));
+                    byte[] b = new byte[s.ReceiveBufferSize];
+                    int k = s.Receive(b);
+                    string msg = "";
+                    Console.Write("Other:\t");
+                    for (int i = 0; i < k; i++)
+                    {
+                        msg += Convert.ToChar(b[i]);
+                    }
+                    Console.WriteLine(TxtDecrypt(msg, EncryptionKey));
 
-                ASCIIEncoding asen = new ASCIIEncoding();
-                s.Send(asen.GetBytes("The string was recieved by the server."));
-                Console.WriteLine("\nSent Acknowledgement");
+                    Console.Write("Me:\t");
+                    string toSend = TxtEncrypt(Console.ReadLine(), EncryptionKey);
+                    s.Send(Encoding.UTF8.GetBytes(toSend));
+                }
                 /* clean up */
                 s.Close();
                 myList.Stop();
