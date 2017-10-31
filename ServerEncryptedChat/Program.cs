@@ -16,12 +16,12 @@ namespace ServerEncryptedChat
         {
             try
             {
-                IPAddress ipAd = IPAddress.Parse("192.168.1.12");
+                IPAddress ipAd = IPAddress.Parse("172.17.1.241");
                 // use local m/c IP address, and 
                 // use the same in the client
 
-                String EncryptionKey = GetHashedKey("192.168.1.12");
-                //Key used to encrypt and decrypt the messages.
+                string EncryptionKey = GetHashedKey("Alexandros");
+                //create Encryption Key to encrypt and Decrypt
 
                 /* Initializes the Listener */
                 TcpListener myList = new TcpListener(ipAd, 8001);
@@ -37,12 +37,15 @@ namespace ServerEncryptedChat
                 Socket s = myList.AcceptSocket();
                 Console.WriteLine("Connection accepted from " + s.RemoteEndPoint);
 
-                byte[] b = new byte[100];
+                byte[] b = new byte[s.ReceiveBufferSize];
                 int k = s.Receive(b);
+                string msg = "";
                 Console.WriteLine("Recieved...");
-                string recievedMsg = Encoding.UTF8.GetString(b);
-                string test = TxtDecrypt(recievedMsg, EncryptionKey);
-                Console.Write(test);
+                for (int i = 0; i < k; i++)
+                {
+                    msg += Convert.ToChar(b[i]);
+                }
+                Console.WriteLine(TxtDecrypt(msg, EncryptionKey));
 
                 ASCIIEncoding asen = new ASCIIEncoding();
                 s.Send(asen.GetBytes("The string was recieved by the server."));
