@@ -16,7 +16,7 @@ namespace ServerEncryptedChat
         {
             try
             {
-                IPAddress ipAd = IPAddress.Parse("172.17.1.241");
+                IPAddress ipAd = IPAddress.Parse("192.168.1.12");
                 // use local m/c IP address, and 
                 // use the same in the client
 
